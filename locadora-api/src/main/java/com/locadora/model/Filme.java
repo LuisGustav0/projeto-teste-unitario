@@ -38,4 +38,8 @@ public class Filme {
 	public void setPrecoLocacao(Double precoLocacao) {
 		this.precoLocacao = precoLocacao;
 	}
+
+	public boolean isSemEstoque() {
+		return getEstoque() == null || getEstoque() == 0;
+	}
 }
