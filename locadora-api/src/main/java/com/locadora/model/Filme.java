@@ -1,15 +1,17 @@
 package com.locadora.model;
 
+import java.math.BigDecimal;
+
 public class Filme {
 
 	private String	nome;
 	private Integer	estoque;
-	private Double	precoLocacao;
+	private BigDecimal precoLocacao;
 
 	public Filme() {
 	}
 
-	public Filme(String nome, Integer estoque, Double precoLocacao) {
+	public Filme(String nome, Integer estoque, BigDecimal precoLocacao) {
 		this.nome = nome;
 		this.estoque = estoque;
 		this.precoLocacao = precoLocacao;
@@ -31,11 +33,11 @@ public class Filme {
 		this.estoque = estoque;
 	}
 
-	public Double getPrecoLocacao() {
+	public BigDecimal getPrecoLocacao() {
 		return precoLocacao;
 	}
 
-	public void setPrecoLocacao(Double precoLocacao) {
+	public void setPrecoLocacao(BigDecimal precoLocacao) {
 		this.precoLocacao = precoLocacao;
 	}
 
