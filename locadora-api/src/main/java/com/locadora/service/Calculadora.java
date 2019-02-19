@@ -11,7 +11,7 @@ public class Calculadora {
     return valor1 - valor2;
   }
 
-  public int divide(int valor1, int valor2) throws NaoPodeDividirPorZeroException {
+  public int dividir(int valor1, int valor2) throws NaoPodeDividirPorZeroException {
     if (valor2 == 0) {
       throw new NaoPodeDividirPorZeroException("Nao pode ser dividido por ZERO!");
     }

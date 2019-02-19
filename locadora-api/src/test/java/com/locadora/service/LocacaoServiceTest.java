@@ -6,12 +6,20 @@ import com.locadora.exceptions.UtilException;
 import com.locadora.model.Filme;
 import com.locadora.model.Locacao;
 import com.locadora.model.Usuario;
-import org.junit.*;
+import com.locadora.util.UtilDate;
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Assume;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.rules.ErrorCollector;
 import org.junit.rules.ExpectedException;
 
 import java.math.BigDecimal;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -31,17 +39,14 @@ public class LocacaoServiceTest {
 
   @Before
   public void onBefore() {
-    System.out.println("onBefore");
     service = new LocacaoService();
   }
 
-  @After
-  public void onAfter() {
-    System.out.println("onAfter");
-  }
-
   @Test
-  public void locacaoTest() throws Exception {
+  public void permitidoAlugarFilme() throws Exception {
+    //
+    Assume.assumeFalse(UtilDate.verificarDiaDaSemana(LocalDate.now(), DayOfWeek.SATURDAY));
+
     // Cenario
     Usuario usuario = new Usuario("Usuario 1");
     List<Filme> listaFilme = Collections.singletonList(new Filme("Filme 1", 1, new BigDecimal(5.0)));
@@ -55,18 +60,9 @@ public class LocacaoServiceTest {
     error.checkThat(locacao.getDataRetorno().isEqual(LocalDate.now().plusDays(1)), is(true));
   }
 
-  @Test(expected = FilmeSemEstoqueException.class)
-  public void locacaoTest_filmeSemEstoque() throws Exception {
-    // Cenario
-    Usuario usuario = new Usuario("Usuario 1");
-    List<Filme> listaFilme = Collections.singletonList(new Filme("Filme 1", 0, new BigDecimal(5.0)));
-
-    // Acao
-    service.alugarFilme(usuario, listaFilme);
-  }
 
   @Test
-  public void locacaoTest_usuarioIsNullOuVazio() throws FilmeSemEstoqueException {
+  public void naoPermitidoAlugarFilmeComUsuarioNullOuVazio() throws FilmeSemEstoqueException {
     // Cenario
     List<Filme> listaFilme = Collections.singletonList(new Filme("Filme 1", 1, new BigDecimal(5.0)));
 
@@ -80,7 +76,7 @@ public class LocacaoServiceTest {
   }
 
   @Test
-  public void locacaoTest_filmeIsNullOuVazio() throws LocadoraException, FilmeSemEstoqueException {
+  public void naoPermitidoAlugarFilmeComFilmeNullOuVazio() throws LocadoraException, FilmeSemEstoqueException {
     // Cenario
     Usuario usuario = new Usuario("Usuario 1");
 
@@ -90,5 +86,111 @@ public class LocacaoServiceTest {
 
     // Acao
     service.alugarFilme(usuario, null);
+  }
+
+  @Test(expected = FilmeSemEstoqueException.class)
+  public void naoPermitidoAlugarFilmeSemEstoque() throws Exception {
+    // Cenario
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Collections.singletonList(new Filme("Filme 1", 0, new BigDecimal(5.0)));
+
+    // Acao
+    service.alugarFilme(usuario, listaFilme);
+  }
+
+  @Test
+  public void devePagar75PorcentoDescontoNo3Filme() throws LocadoraException, FilmeSemEstoqueException {
+    // Cenario
+    BigDecimal valorLocacao = new BigDecimal(11.0);
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Arrays.asList(
+        new Filme("Filme 1", 2, new BigDecimal(4.0)),
+        new Filme("Filme 2", 3, new BigDecimal(4.0)),
+        new Filme("Filme 3", 5, new BigDecimal(4.0))
+    );
+
+    // Acao
+    Locacao locacao = service.alugarFilme(usuario, listaFilme);
+
+    // Verificao
+    Assert.assertThat(locacao.getValor(), Matchers.comparesEqualTo(valorLocacao));
+  }
+
+  @Test
+  public void devePagar50PorcentoDescontoNo4Filme() throws LocadoraException, FilmeSemEstoqueException {
+    // Cenario
+    BigDecimal valorLocacao = new BigDecimal(13.0);
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Arrays.asList(
+        new Filme("Filme 1", 2, new BigDecimal(4.0)),
+        new Filme("Filme 2", 3, new BigDecimal(4.0)),
+        new Filme("Filme 3", 5, new BigDecimal(4.0)),
+        new Filme("Filme 4", 5, new BigDecimal(4.0))
+    );
+
+    // Acao
+    Locacao locacao = service.alugarFilme(usuario, listaFilme);
+
+    // Verificao
+    Assert.assertThat(locacao.getValor(), Matchers.comparesEqualTo(valorLocacao));
+  }
+
+  @Test
+  public void devePagar25PorcentoDescontoNo5Filme() throws LocadoraException, FilmeSemEstoqueException {
+    // Cenario
+    BigDecimal valorLocacao = new BigDecimal(14.0);
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Arrays.asList(
+        new Filme("Filme 1", 2, new BigDecimal(4.0)),
+        new Filme("Filme 2", 3, new BigDecimal(4.0)),
+        new Filme("Filme 3", 5, new BigDecimal(4.0)),
+        new Filme("Filme 4", 5, new BigDecimal(4.0)),
+        new Filme("Filme 5", 5, new BigDecimal(4.0))
+    );
+
+    // Acao
+    Locacao locacao = service.alugarFilme(usuario, listaFilme);
+
+    // Verificao
+    Assert.assertThat(locacao.getValor(), Matchers.comparesEqualTo(valorLocacao));
+  }
+
+  @Test
+  public void devePagar100PorcentoDescontoNo6Filme() throws LocadoraException, FilmeSemEstoqueException {
+    // Cenario
+    BigDecimal valorLocacao = new BigDecimal(14.0);
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Arrays.asList(
+        new Filme("Filme 1", 2, new BigDecimal(4.0)),
+        new Filme("Filme 2", 3, new BigDecimal(4.0)),
+        new Filme("Filme 4", 5, new BigDecimal(4.0)),
+        new Filme("Filme 5", 5, new BigDecimal(4.0)),
+        new Filme("Filme 6", 5, new BigDecimal(4.0))
+    );
+
+    // Acao
+    Locacao locacao = service.alugarFilme(usuario, listaFilme);
+
+    // Verificao
+    Assert.assertThat(locacao.getValor(), Matchers.comparesEqualTo(valorLocacao));
+  }
+
+  @Test
+  public void deveDevolverNaSegundaSeAlugarNoSabado() throws LocadoraException, FilmeSemEstoqueException {
+    //
+    Assume.assumeTrue(UtilDate.verificarDiaDaSemana(LocalDate.now(), DayOfWeek.SATURDAY));
+
+    // Cenario
+    Usuario usuario = new Usuario("Usuario 1");
+    List<Filme> listaFilme = Arrays.asList(
+        new Filme("Filme 1", 2, new BigDecimal(4.0))
+    );
+
+    // Acao
+    Locacao locacao = service.alugarFilme(usuario, listaFilme);
+
+    // Verificacao
+    boolean isSegundaFeira = UtilDate.verificarDiaDaSemana(locacao.getDataRetorno(), DayOfWeek.MONDAY);
+    Assert.assertTrue(isSegundaFeira);
   }
 }

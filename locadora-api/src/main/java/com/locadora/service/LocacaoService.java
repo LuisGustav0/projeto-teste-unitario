@@ -1,16 +1,18 @@
 package com.locadora.service;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
-
 import com.locadora.exceptions.FilmeSemEstoqueException;
 import com.locadora.exceptions.LocadoraException;
 import com.locadora.exceptions.UtilException;
 import com.locadora.model.Filme;
 import com.locadora.model.Locacao;
 import com.locadora.model.Usuario;
-import com.machinezoo.noexception.Exceptions;
+import com.locadora.util.UtilDate;
+
+import java.math.BigDecimal;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class LocacaoService {
 
@@ -35,16 +37,38 @@ public class LocacaoService {
     locacao.setUsuario(usuario);
     locacao.setDataLocacao(LocalDate.now());
 
-    BigDecimal valorTotalLocacao = listaFilme
-        .stream()
-        .map(Filme::getPrecoLocacao)
-        .reduce(BigDecimal::add)
-        .get();
+    BigDecimal[] valorTotalLocacao = {BigDecimal.ZERO};
+    AtomicInteger index = new AtomicInteger();
+    listaFilme.forEach(filmeTO -> {
+      index.getAndIncrement();
+      BigDecimal valorFilme = BigDecimal.ZERO;
+      valorFilme = valorFilme.add(filmeTO.getPrecoLocacao());
 
-    locacao.setValor(valorTotalLocacao);
+      switch (index.get()) {
+        case 3:
+          valorFilme = valorFilme.multiply(new BigDecimal(0.75));
+          break;
+
+        case 4:
+          valorFilme = valorFilme.multiply(new BigDecimal(0.5));
+          break;
+
+        case 5:
+          valorFilme = valorFilme.multiply(new BigDecimal(0.25));
+          break;
+
+        case 6:
+          valorFilme = valorFilme.multiply(BigDecimal.ZERO);
+          break;
+      }
+      valorTotalLocacao[0] = valorTotalLocacao[0].add(valorFilme);
+    });
+
+    locacao.setValor(valorTotalLocacao[0]);
 
     // Entrega no dia seguinte,
-    LocalDate dataEntrega = LocalDate.now().plusDays(1);
+    LocalDate dataEntrega = LocalDate.now();
+    dataEntrega = UtilDate.verificarDiaDaSemana(dataEntrega, DayOfWeek.SATURDAY) ? dataEntrega.plusDays(2) : dataEntrega.plusDays(1);
     locacao.setDataRetorno(dataEntrega);
 
     // Salvando a locacao...

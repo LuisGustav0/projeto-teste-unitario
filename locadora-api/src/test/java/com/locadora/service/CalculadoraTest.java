@@ -47,7 +47,7 @@ public class CalculadoraTest {
     int valor2 = 3;
 
     // Acao
-    int resultado = calculadora.divide(valor1, valor2);
+    int resultado = calculadora.dividir(valor1, valor2);
 
     // Verificacao
     Assert.assertEquals(2, resultado);
@@ -60,7 +60,7 @@ public class CalculadoraTest {
     int valor2 = 0;
 
     // Acao
-    int resultado = calculadora.divide(valor1, valor2);
+    int resultado = calculadora.dividir(valor1, valor2);
 
     // Verificacao
     Assert.assertEquals(8, resultado);
