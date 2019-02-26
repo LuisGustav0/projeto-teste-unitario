@@ -7,7 +7,6 @@ import com.locadora.model.Filme;
 import com.locadora.model.Locacao;
 import com.locadora.model.Usuario;
 import com.locadora.util.UtilDate;
-import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.Assume;
 import org.junit.Before;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.locadora.matchers.MatchersProprios.caiEmUmaSegunda;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -113,7 +113,6 @@ public class LocacaoServiceTest {
     Locacao locacao = service.alugarFilme(usuario, listaFilme);
 
     // Verificacao
-    boolean isSegundaFeira = UtilDate.verificarDiaDaSemana(locacao.getDataRetorno(), DayOfWeek.MONDAY);
-    Assert.assertTrue(isSegundaFeira);
+    Assert.assertThat(locacao.getDataRetorno(), caiEmUmaSegunda());
   }
 }
