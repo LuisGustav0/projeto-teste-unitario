@@ -3,6 +3,7 @@ package com.locadora.service;
 import com.locadora.exceptions.FilmeSemEstoqueException;
 import com.locadora.exceptions.LocadoraException;
 import com.locadora.exceptions.UtilException;
+import com.locadora.matchers.MatchersProprios;
 import com.locadora.model.Filme;
 import com.locadora.model.Locacao;
 import com.locadora.model.Usuario;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static com.locadora.matchers.MatchersProprios.*;
 import static com.locadora.matchers.MatchersProprios.caiEmUmaSegunda;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -56,8 +58,11 @@ public class LocacaoServiceTest {
 
     // Verificacao
     error.checkThat(locacao.getValor(), is(equalTo(new BigDecimal(5.0))));
-    error.checkThat(locacao.getDataLocacao().isEqual(LocalDate.now()), is(true));
-    error.checkThat(locacao.getDataRetorno().isEqual(LocalDate.now().plusDays(1)), is(true));
+    //error.checkThat(locacao.getDataLocacao().isEqual(LocalDate.now()), is(true));
+    //error.checkThat(locacao.getDataRetorno().isEqual(LocalDate.now().plusDays(1)), is(true));
+
+//    error.checkThat(locacao.getDataLocacao(), ehHoje());
+    //error.checkThat(locacao.getDataRetorno().isEqual(LocalDate.now().plusDays(1)), is(true));
   }
 
 
