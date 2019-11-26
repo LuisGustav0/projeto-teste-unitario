@@ -1,6 +1,6 @@
 package com.locadora.exceptions;
 
-public class UtilException {
+public class UtilMensagem {
 
     private static String CAMPO_PREENCHIMENTO_OBRIGATORIO = "Campo preenchimento obrigatório: ";
     public static String USUARIO_NULL_OU_VAZIO = CAMPO_PREENCHIMENTO_OBRIGATORIO + "Usuário";
