@@ -8,15 +8,15 @@ import org.junit.runners.MethodSorters;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class OrdemTest {
 
-  public static int contador = 0;
+    public static int contador = 0;
 
-  @Test
-  public void iniciarVariavel() {
-    contador = 1;
-  }
+    @Test
+    public void iniciarVariavel() {
+        contador = 1;
+    }
 
-  @Test
-  public void isContadorIgualUm() {
-    Assert.assertEquals(1, contador);
-  }
+    @Test
+    public void isContadorIgualUm() {
+        Assert.assertEquals(1, contador);
+    }
 }

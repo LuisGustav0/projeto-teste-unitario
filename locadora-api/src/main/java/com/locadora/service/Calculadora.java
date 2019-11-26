@@ -3,6 +3,7 @@ package com.locadora.service;
 import com.locadora.exceptions.NaoPodeDividirPorZeroException;
 
 public class Calculadora {
+
   public int somar(int valor1, int valor2) {
     return valor1 + valor2;
   }

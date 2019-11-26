@@ -9,5 +9,4 @@ public class LocadoraApiApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(LocadoraApiApplication.class, args);
 	}
-
 }
